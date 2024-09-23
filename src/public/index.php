@@ -12,6 +12,7 @@ $statement = $pdo->prepare($sql);
 $statement->execute();
 $pages = $statement->fetchAll(PDO::FETCH_ASSOC);
 
+$standard_key_array = [];
 foreach ($pages as $key => $value) {
     $standard_key_array[$key] = $value['created_at'];
 }
