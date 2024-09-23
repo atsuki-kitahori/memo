@@ -7,8 +7,17 @@ $pdo = new PDO(
     $dbPassword
 );
 
-$sql = 'SELECT * FROM pages';
-$statement = $pdo->prepare($sql);
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+if ($search) {
+    $sql = 'SELECT * FROM pages WHERE title LIKE :search';
+    $statement = $pdo->prepare($sql);
+    $statement->bindValue(':search', "%{$search}%", PDO::PARAM_STR);
+} else {
+    $sql = 'SELECT * FROM pages';
+    $statement = $pdo->prepare($sql);
+}
+
 $statement->execute();
 $pages = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -23,6 +32,13 @@ array_multisort($standard_key_array, SORT_DESC, $pages);
 
   <div>
     <a href="./create.php">メモを追加</a><br>
+  </div>
+
+  <div>
+    <form method="GET" action="./index.php">
+      <input type="text" name="search" placeholder="タイトルで検索">
+      <button type="submit">検索</button>
+    </form>
   </div>
 
   <div>
